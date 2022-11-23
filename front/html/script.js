@@ -1,14 +1,15 @@
-// Sélection de l'emplacement dans lequel on va afficher nos produits, sur la page d'accueil. Ici dans la section avec l'id "items".
+// Page d'accueil
+// Affichage des produits dans la section "items".
 const sectionItems = document.querySelector('#items');
 
-// Récupération de toutes les données de l'api que l'on met dans un constante listProducts
+// Récupération de toutes les données de l'api avec la constante listProducts
 fetch("http://localhost:3000/api/products")
     .then(response => response.json())
     .then(data => {
         for (const listProducts of data) {
-            console.log(listProducts);
+            
 
-            // Création des éléments html manquants de la page index.html et on y insère les données de l'api
+            // Création des éléments html incluants les données de l'api
             let newA = document.createElement('a');
             newA.setAttribute("href", `./product.html?id=${listProducts._id}`);
             sectionItems.appendChild(newA);
@@ -33,6 +34,5 @@ fetch("http://localhost:3000/api/products")
         }
     })
     .catch(err => {
-        alert(`Une erreur s'est produite !`);
-        console.log("Erreur Fetch", err);
+        alert(`Mauvaise manipulation ! Se connecter avec node server.js`);
     })
