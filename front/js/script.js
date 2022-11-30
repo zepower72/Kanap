@@ -9,7 +9,7 @@ fetch("http://localhost:3000/api/products")
   .then(affichageArticles)
 
   //Message d'erreur si le serveur ne répond pas
-  .catch(error);
+  .catch((error) => alert("Se connecter à node"));
 
 //Fonction d'affichage des articles
 function affichageArticles(articles) {
@@ -44,5 +44,5 @@ function affichageArticles(articles) {
     articleElement.appendChild(pElement);
     pElement.innerText = product.description;
   }
-  return cards;
+  return affichageArticles;
 }

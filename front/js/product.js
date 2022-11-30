@@ -14,7 +14,7 @@ const id = params.get("id");
 const urlProduct = `http://localhost:3000/api/products/${id}`;
 console.log(urlProduct);
 
-//Variables produit
+//Variables produit raccordé à l'HTML
 //Variable de l'image
 const image = document.querySelector(".item__img");
 const imageProduct = document.createElement("img");
@@ -27,9 +27,9 @@ const descriptionProduct = document.getElementById("description");
 //Variable de l'option
 const color = document.getElementById("colors");
 //Variable de la quantité
-const choiceQuantite = document.getElementById("quantity");
+const quantity = document.getElementById("quantity");
 //Variable du bouton "Ajouter au panier"
-const check = document.getElementById("addToCart");
+const button = document.getElementById("addToCart");
 
 //Utilisation d'une fonction pour l'insertion des éléments du produit
 function displayproduct(article) {
@@ -41,6 +41,8 @@ function displayproduct(article) {
   titleProduct.innerText = article.name;
   //Insertion du prix
   priceProduct.innerText = article.price;
+  //test
+  console.log(priceProduct);
   //Insertion de la description
   descriptionProduct.innerText = article.description;
   /*Insertion de l'option
@@ -49,21 +51,21 @@ function displayproduct(article) {
     const option = document.createElement("option");
     option.innerText = article.colors[i];
     color.appendChild(option);
+    //test
+    console.log(option);
   }
+
+  return displayproduct;
 }
 //Je fais appel à fetch pour l'URL de la page produit
 fetch(urlProduct)
-  /*Première promesse, qui récupére la réponse en json*/
-  .then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-  })
+  //Première promesse, qui récupére la réponse en json
+  .then((response) => response.json())
   //Deuxième promesse pour l'affichage des produits
   .then(displayproduct)
   //Message d'erreur si le serveur ne répond pas
   .catch((error) => {
-    alert("Le serveur ne répond pas !!!");
+    alert("Se connecter au serveur !!!");
   });
 
 /*localStorage.setItem("clé", "valeur")
