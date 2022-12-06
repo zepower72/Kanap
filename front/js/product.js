@@ -1,11 +1,12 @@
 // Page produit
 
 // Récupération de l'id du produit via l' URL
-//--------------------------------------------------------------------------
+
 //la variable params récupère l'url de la page
 const params = new URLSearchParams(window.location.search);
 console.log(window.location.search);
-// Boucle pour chaque paramètre en array
+//https://www.matthieufesselier.com/blog/urlsearchparams-les-parametres-durls-tout-simplement-en-javascript
+// Boucle pour itérer sur chaque paramètre en array
 for (const param of params) {
   console.log(param);
 }
@@ -31,9 +32,9 @@ const quantity = document.getElementById("quantity");
 //Variable du bouton "Ajouter au panier"
 const button = document.getElementById("addToCart");
 
-//Utilisation d'une fonction pour l'insertion des éléments du produit
+//Utilisation d'une fonction pour l'insertion des éléments de l'article
 function displayproduct(article) {
-  //Insertion des images
+  //Insertion de l'image
   imageProduct.src = article.imageUrl;
   imageProduct.alt = article.altTxt;
   image.appendChild(imageProduct);
@@ -41,13 +42,13 @@ function displayproduct(article) {
   titleProduct.innerText = article.name;
   //Insertion du prix
   priceProduct.innerText = article.price;
-  //test
-  console.log(priceProduct);
+
   //Insertion de la description
   descriptionProduct.innerText = article.description;
   /*Insertion de l'option
   Utilisation d'une boucle*/
   for (let i = 0; i < article.colors.length; i++) {
+    //https://www.w3schools.com/jsref/jsref_for.asp
     const option = document.createElement("option");
     option.innerText = article.colors[i];
     color.appendChild(option);
@@ -67,13 +68,35 @@ fetch(urlProduct)
   .catch((error) => {
     alert("Se connecter au serveur !!!");
   });
+//---------------------------------------------------------------------------------------
 
-/*localStorage.setItem("clé", "valeur")
-La fonction setItem permet d’écrire une valeur dans le localStorage. Elle prend deux arguments :
-la clé : une chaîne de caractères ;
-la valeur à enregistrer : une chaîne de caractères.*/
+//Fonction pour ajouter au panier (bouton "Ajouter au panier")
+function addToCart() {
+  //Variable qui contient les éléments souhaités
+  const basket = {
+    id: id,
+    quantity: quantity.value,
+    color: color.value,
+  };
+  //On récupère la variable panier dans le localStorage avec getItem 
+  const basketInStorage = localStorage.getItem("basket");
+  
+  //Si aucun produit n'a été ajouté, on créé (initialise) un Array Panier
+  if (basketInStorage === null) {
+    //Lors de l'envoi de données à un serveur Web, les données doivent être une chaîne.
+    //Conversion d'un objet JavaScript en chaîne avec JSON.stringify().
+    localStorage.setItem("basket", JSON.stringify([basket]));
 
-/*local Storage.getItem("clé")
-    La fonction getItem permet de lire une valeur depuis le localStorage. Elle ne prend qu’un argument : la clé (une chaîne de caractères).*/
+  } else {
+    //Si un produit a déjà été ajouté, on créé un Panier pour un produit(itemBasket)
+    //Lorsque vous utilisez le JSON.parse()sur un JSON dérivé d'un tableau, la méthode renverra un tableau JavaScript, au lieu d'un objet JavaScript.
+    const itemBasket = JSON.parse(basketInStorage);
+    //On ajoute le produit au panier
+    itemBasket.push(basket);
+    //Lors de l'envoi de données à un serveur Web, les données doivent être une chaîne.
+    //Conversion d'un objet JavaScript en chaîne avec JSON.stringify().
+    localStorage.setItem("basket", JSON.stringify(itemBasket));
+  }
+}
 
-/*localStorage.clear() ou removeItem*/
+button.addEventListener("click", addToCart);
