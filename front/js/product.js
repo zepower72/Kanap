@@ -28,7 +28,7 @@ const descriptionProduct = document.getElementById("description");
 //Variable de l'option
 const color = document.getElementById("colors");
 //Variable de la quantité
-const quantity = document.getElementById("quantity");
+const choiceQuantite = document.getElementById("quantity");
 //Variable du bouton "Ajouter au panier"
 const button = document.getElementById("addToCart");
 
@@ -68,6 +68,7 @@ fetch(urlProduct)
   .catch((error) => {
     alert("Se connecter au serveur !!!");
   });
+
 //---------------------------------------------------------------------------------------
 
 //Fonction pour ajouter au panier (bouton "Ajouter au panier")
@@ -78,24 +79,47 @@ function addToCart() {
     quantity: quantity.value,
     color: color.value,
   };
-  //On récupère la variable panier dans le localStorage avec getItem 
+  function validOrder(e) {
+    if (basket.quantity <= 0 || basket.color === "") {
+      alert("Veuillez choisir une couleur et une quantité");
+      e.preventDefault();
+    } else {
+      alert("Votre commande a bien été prise en compte");
+    }
+  }
+  validOrder();
+
+  //On créé la variable panier dans le localStorage avec getItem
   const basketInStorage = localStorage.getItem("basket");
-  
+
   //Si aucun produit n'a été ajouté, on créé (initialise) un Array Panier
   if (basketInStorage === null) {
     //Lors de l'envoi de données à un serveur Web, les données doivent être une chaîne.
     //Conversion d'un objet JavaScript en chaîne avec JSON.stringify().
     localStorage.setItem("basket", JSON.stringify([basket]));
-
+    //
   } else {
     //Si un produit a déjà été ajouté, on créé un Panier pour un produit(itemBasket)
     //Lorsque vous utilisez le JSON.parse()sur un JSON dérivé d'un tableau, la méthode renverra un tableau JavaScript, au lieu d'un objet JavaScript.
     const itemBasket = JSON.parse(basketInStorage);
-    //On ajoute le produit au panier
-    itemBasket.push(basket);
-    //Lors de l'envoi de données à un serveur Web, les données doivent être une chaîne.
-    //Conversion d'un objet JavaScript en chaîne avec JSON.stringify().
-    localStorage.setItem("basket", JSON.stringify(itemBasket));
+
+    //On vérifie si le produit est déjà dans le panier
+    const productInBasket = itemBasket.find(
+      (item) => item.id === basket.id && item.color === basket.color
+    );
+
+    //Si le produit est déjà dans le panier, on ajoute la quantité
+    if (productInBasket) {
+      productInBasket.quantity =
+        Number(productInBasket.quantity) + Number(basket.quantity);
+      //On enregistre le panier dans le localStorage
+      localStorage.setItem("basket", JSON.stringify(itemBasket));
+    } else {
+      //Si le produit n'est pas dans le panier, on ajoute le produit
+      itemBasket.push(basket);
+      //On enregistre le panier dans le localStorage
+      localStorage.setItem("basket", JSON.stringify(itemBasket));
+    }
   }
 }
 
